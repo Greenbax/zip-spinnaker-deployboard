@@ -4,5 +4,5 @@ Plugin-Id: zip.deployboard
 Plugin-Version: 1.0.0
 Plugin-Requires: gate>=0.0.0
 Plugin-Description: Customization for Zip deploys
-Plugin-Provider: https://github.com/spinnaker-plugin-examples
+Plugin-Provider: https://github.com/Greenbax/zip-spinnaker-deployboard
 
