@@ -1,0 +1,14 @@
+rootProject.name = "zip-spinnaker-deployboard"
+
+include "zip-deployboard-deck", "zip-deployboard-gate"
+
+def setBuildFile(project) {
+  project.buildFileName = "${project.name}.gradle"
+  project.children.each {
+    setBuildFile(it)
+  }
+}
+
+rootProject.children.each {
+  setBuildFile(it)
+}

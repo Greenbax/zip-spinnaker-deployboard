@@ -1,11 +1,17 @@
-import org.yaml.snakeyaml.Yaml
-
 buildscript {
-  repositories {
-    mavenCentral()
-  }
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url "https://repo.maven.apache.org/maven2/io/"
+        }
+    }
 }
 
+apply plugin: 'java'
+apply plugin: "io.spinnaker.plugin.bundler"
 apply plugin: "io.spinnaker.plugin.service-extension"
 apply plugin: "maven-publish"
 
@@ -13,7 +19,13 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-  mavenCentral()
+    mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+    maven {
+        url "https://repo.maven.apache.org/maven2/io/"
+    }
 }
 
 spinnakerPlugin {
@@ -22,9 +34,15 @@ spinnakerPlugin {
 }
 
 dependencies {
-  compileOnly "org.pf4j:pf4j:${pf4jVersion}"
-  compileOnly "io.spinnaker.kork:kork-plugins-api:${korkVersion}"
-  compileOnly "io.spinnaker.kork:kork-artifacts:${korkVersion}"
-  compileOnly "io.spinnaker.gate:gate-api:${gateVersion}"
-  kapt "org.pf4j:pf4j:${pf4jVersion}"
+    annotationProcessor("org.pf4j:pf4j:$pf4jVersion")
+
+    compileOnly 'org.projectlombok:lombok:+'
+    annotationProcessor 'org.projectlombok:lombok:+'
+
+    compileOnly "io.spinnaker.kork:kork-plugins-api:$korkVersion"
+    compileOnly "io.spinnaker.gate:gate-api:$gateVersion"
+}
+
+compileJava {
+    options.compilerArgs << '-Apf4j.ignoreExtensionPoint'
 }

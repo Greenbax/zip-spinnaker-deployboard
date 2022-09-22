@@ -1,22 +1,45 @@
 buildscript {
   repositories {
     mavenCentral()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+    maven {
+      url "https://repo.maven.apache.org/maven2/io/"
+    }
   }
 }
 
 plugins {
   id("com.moowork.node").version("1.3.1").apply(false)
-  id("io.spinnaker.plugin.bundler").version("$spinnakerGradleVersion")
+  id("io.spinnaker.plugin.bundler").version("8.10.1")
   id("com.palantir.git-version").version("0.12.2")
 }
 
+apply plugin: "io.spinnaker.plugin.bundler"
 spinnakerBundle {
-  pluginId = "Zip.Deployboard"
+  pluginId = "zip.deployboard"
   description = "Customization for Zip deploys"
-  version = rootProject.version
+  provider = "https://github.com/Greenbax/zip-spinnaker-deployboard"
+  version = "1.0.0"
+}
+
+repositories {
+  mavenCentral()
+  maven {
+    url "https://plugins.gradle.org/m2/"
+  }
+  maven {
+    url "https://repo.maven.apache.org/maven2/io/"
+  }
 }
 
 version = normalizedVersion()
+
+subprojects {
+  group = "io.zip.plugin.manifest"
+  version = "1.0.0"
+}
 
 String normalizedVersion() {
   String fullVersion = gitVersion()
