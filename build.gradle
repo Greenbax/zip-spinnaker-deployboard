@@ -18,11 +18,6 @@ spinnakerBundle {
 
 version = normalizedVersion()
 
-subprojects {
-  group = "io.armory.plugin.manifest"
-  version = rootProject.version
-}
-
 String normalizedVersion() {
   String fullVersion = gitVersion()
   String normalized = fullVersion.split("-").first()

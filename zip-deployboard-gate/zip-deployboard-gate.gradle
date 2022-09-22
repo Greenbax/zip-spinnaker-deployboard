@@ -1,0 +1,30 @@
+import org.yaml.snakeyaml.Yaml
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: "io.spinnaker.plugin.service-extension"
+apply plugin: "maven-publish"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+spinnakerPlugin {
+  serviceName = "gate"
+  pluginClass = "io.ziphq.deployboard.ApiExtensionPlugin"
+}
+
+dependencies {
+  compileOnly "org.pf4j:pf4j:${pf4jVersion}"
+  compileOnly "io.spinnaker.kork:kork-plugins-api:${korkVersion}"
+  compileOnly "io.spinnaker.kork:kork-artifacts:${korkVersion}"
+  compileOnly "io.spinnaker.gate:gate-api:${gateVersion}"
+  kapt "org.pf4j:pf4j:${pf4jVersion}"
+}
