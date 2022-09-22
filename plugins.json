@@ -1,0 +1,15 @@
+{
+    "id": "zip.deployboard",
+    "description": "Customization for Zip deploys",
+    "provider": "https://github.com/Greenbax/zip-spinnaker-deployboard",
+    "releases": [
+        {
+            "version": "1.0.0",
+            "date": "2022-09-22T18:56:43.520143Z",
+            "requires": "gate>=0.0.0,deck>=0.0.0",
+            "sha512sum": "44d0e436ea562c7bd4e1897fc2ae07cb9680a8bfd55e0e4a01b8e2f58c026765c2b6b65d44c84e398658b9fd3d2308224210197713238fa19d5f193369e19bd4",
+            "state": "",
+            "url": "https://github.com/Greenbax/zip-spinnaker-deployboard/releases/download/v1.0.0/zip-spinnaker-deployboard-v1.0.0.zip"
+        }
+    ]
+}
