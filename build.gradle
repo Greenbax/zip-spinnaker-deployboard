@@ -16,14 +16,6 @@ plugins {
   id("com.palantir.git-version").version("0.12.2")
 }
 
-apply plugin: "io.spinnaker.plugin.bundler"
-spinnakerBundle {
-  pluginId = "zip.deployboard"
-  description = "Customization for Zip deploys"
-  provider = "https://github.com/Greenbax/zip-spinnaker-deployboard"
-  version = "1.0.0"
-}
-
 repositories {
   mavenCentral()
   maven {
@@ -34,13 +26,6 @@ repositories {
   }
 }
 
-version = normalizedVersion()
-
-subprojects {
-  group = "io.zip.plugin.manifest"
-  version = "1.0.0"
-}
-
 String normalizedVersion() {
   String fullVersion = gitVersion()
   String normalized = fullVersion.split("-").first()
@@ -49,4 +34,17 @@ String normalizedVersion() {
   } else {
     return normalized
   }
+}
+
+subprojects {
+  group = "io.zip.plugin.manifest"
+  version = "${normalizedVersion()}"
+}
+
+apply plugin: "io.spinnaker.plugin.bundler"
+spinnakerBundle {
+  pluginId = "zip.deployboard"
+  description = "Customization for Zip deploys"
+  provider = "https://github.com/Greenbax/zip-spinnaker-deployboard"
+  version = "${normalizedVersion()}"
 }

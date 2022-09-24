@@ -1,6 +1,6 @@
 rootProject.name = "zip-spinnaker-deployboard"
 
-include "zip-deployboard-deck", "zip-deployboard-gate"
+include "zip-deployboard-deck", "zip-deployboard-gate", "zip-deployboard-orca"
 
 def setBuildFile(project) {
   project.buildFileName = "${project.name}.gradle"
