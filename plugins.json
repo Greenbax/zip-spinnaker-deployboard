@@ -13,7 +13,7 @@
                 "url": "https://github.com/Greenbax/zip-spinnaker-deployboard/releases/download/v1.0.0/zip-spinnaker-deployboard-v1.0.0.zip"
             },
             {
-                "version": "53596dd.dirty-SNAPSHOT",
+                "version": "1.0.1",
                 "date": "2022-09-24T19:52:49.112132Z",
                 "requires": "gate>=0.0.0,orca>=0.0.0,deck>=0.0.0",
                 "sha512sum": "4a9c88c0b3d1a07ee1350d3186b780ca4ffc5e022013fc4c5fb3a8fa650b0c027403caa510eb8b0e1e5328ee761f3750479dfba115b6fce5aac72ed74a78736e",
