@@ -28,13 +28,18 @@ public class DynamoStatusTask implements Task {
         logger.info(String.format("maybeContext branch: %s", maybeContext.get("branch")));
         DynamoStatusContext context = stage.mapTo(DynamoStatusContext.class);
         logger.info(String.format("context: %s", context));
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_2).withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
+        logger.info("AAAAAAAAAA after logging");
+        WebIdentityTokenCredentialsProvider token = WebIdentityTokenCredentialsProvider.create();
+        logger.info("AAAAAAAA past token");
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_2).withCredentials(token).build();
+        logger.info("AAAAAAAA past dynamodb client");
         DynamoDB dynamoDB = new DynamoDB(client);
+        logger.info("AAAAAAAA past dynamodb");
         Table table = dynamoDB.getTable(dynamoTableName);
         logger.info("AAAAAAAA past dynamodb config");
 
         // On successful build, update deployed field in dynamo.
-        if (context.getSuccess() != null) {
+        if (context.getSuccess()) {
             logger.info("AAAAAAAAAA in successful build");
             Item item = new Item()
                     .withPrimaryKey("branch", context.getBranch(), "status", "DEPLOYED")
