@@ -55,7 +55,7 @@ class Commit {
     private final String author;
     private final String sha;
     private final String message;
-    private final Integer ts;
+    private final Long ts;
 }
 
 @Data(staticConstructor = "of")
@@ -126,7 +126,7 @@ public class SnapshotsApiExtension implements ApiExtension {
                         dbItem.getString("author"),
                         dbItem.getString("sha"),
                         dbItem.getString("msg"),
-                        Integer.parseInt(dbItem.getString("ts"))
+                        Long.parseLong(dbItem.getString("ts"))
                 );
                 // Add a new build if buildNumber is different
                 if (builds.size() == 0 || builds.get(builds.size() - 1).getBuildNumber() != buildNumber) {
