@@ -10,7 +10,7 @@
                 "requires": "gate>=0.0.0,orca>=0.0.0,deck>=0.0.0",
                 "sha512sum": "b0b479fb058aab001fe001c1f379498f1656540edca85722d82aac5455e2290ce1f3b00c1f98576dde790fa7bb2fdeb797151cbe867e39398c8c6d0c82dc814e",
                 "state": "",
-                "url": "https://github.com/Greenbax/zip-spinnaker-deployboard/releases/download/v1.0.13/zip-spinnaker-deployboard.zip"
+                "url": "https://github.com/Greenbax/zip-spinnaker-deployboard/releases/download/v1.0.14/zip-spinnaker-deployboard.zip"
             }
         ]
     }
