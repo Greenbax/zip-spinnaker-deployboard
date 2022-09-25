@@ -81,6 +81,7 @@ public class SnapshotsApiExtension implements ApiExtension {
         return true;
     }
     public HttpResponse handle(HttpRequest httpRequest) {
+        logger.info("AAAAAAAAAAAAAAAA in handle func");
         Map<String, String> params = httpRequest.getParameters();
         String branch = "prod";
         String query = "";
@@ -132,7 +133,7 @@ public class SnapshotsApiExtension implements ApiExtension {
                         dbItem.getString("msg"),
                         Long.parseLong(dbItem.getString("ts"))
                 );
-                logger.info("currBuildNumber: %d, buildNumber: %d, size: %d", currBuildNumber, buildNumber, builds.size());
+                logger.info("AAAAAAAAAAA currBuildNumber: %d, buildNumber: %d, size: %d", currBuildNumber, buildNumber, builds.size());
                 // Add a new build if buildNumber is different
                 if (builds.size() == 0 || buildNumber != currBuildNumber) {
                     if (builds.size() == buildLimit) {
