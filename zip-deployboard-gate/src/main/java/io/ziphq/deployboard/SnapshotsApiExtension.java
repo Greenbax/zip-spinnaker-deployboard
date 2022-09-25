@@ -42,9 +42,9 @@ class Build {
     }
 
     public void setStatus(String deployedImage, String deployingImage) {
-        if (this.getDockerImage() == deployedImage) {
+        if (this.getDockerImage().equals(deployedImage)) {
             this.setStatus("DEPLOYED");
-        } else if (this.getDockerImage() == deployingImage) {
+        } else if (this.getDockerImage().equals(deployingImage)) {
             this.setStatus("DEPLOYING");
         } else {
             this.setStatus("NOT_DEPLOYED");
@@ -135,8 +135,8 @@ public class SnapshotsApiExtension implements ApiExtension {
                 );
                 logger.info(String.format("AAAAAAAAAAA currBuildNumber: [%d], buildNumber: [%d], size: [%d]", currBuildNumber, buildNumber, builds.size()));
                 // Add a new build if buildNumber is different
-                if (buildNumber != currBuildNumber) {
-                    if (builds.size() == buildLimit) {
+                if (!buildNumber.equals(currBuildNumber)) {
+                    if (buildLimit.equals(builds.size())) {
                         buildLimitReached = true;
                         break;
                     }
@@ -175,9 +175,9 @@ public class SnapshotsApiExtension implements ApiExtension {
         while (iterator.hasNext()) {
             item = iterator.next();
             String status = item.getString("status");
-            if (status == "DEPLOYED") {
+            if (status.equals("DEPLOYED")) {
                 res.setDeployed(item.getString("image"));
-            } else if (status == "DEPLOYING") {
+            } else if (status.equals("DEPLOYING")) {
                 res.setDeploying(item.getString("image"));
             }
         }
