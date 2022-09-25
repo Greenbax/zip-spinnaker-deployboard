@@ -31,5 +31,5 @@ spinnakerBundle {
   pluginId = "zip.deployboard"
   description = "Customization for Zip deploys"
   provider = "https://github.com/Greenbax/zip-spinnaker-deployboard"
-  version = "1.0.13"
+  version = "1.0.14"
 }
