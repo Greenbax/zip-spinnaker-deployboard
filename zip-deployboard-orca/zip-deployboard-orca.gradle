@@ -44,6 +44,7 @@ dependencies {
     compileOnly "io.spinnaker.orca:orca-api:$orcaVersion"
 
     implementation 'com.amazonaws:aws-java-sdk-dynamodb'
+    implementation 'com.amazonaws:aws-java-sdk-sts'
 }
 
 compileJava {

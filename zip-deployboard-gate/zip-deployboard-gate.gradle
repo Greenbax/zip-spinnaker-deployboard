@@ -44,6 +44,7 @@ dependencies {
     compileOnly "io.spinnaker.gate:gate-api:$gateVersion"
 
     implementation 'com.amazonaws:aws-java-sdk-dynamodb'
+    implementation 'com.amazonaws:aws-java-sdk-sts'
 }
 
 compileJava {
