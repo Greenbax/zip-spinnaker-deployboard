@@ -1,6 +1,7 @@
 package io.ziphq.deployboard;
 
 import com.amazonaws.auth.WebIdentityTokenCredentialsProvider;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
@@ -18,7 +19,7 @@ public class DynamoStatusTask implements Task {
 
     public TaskResult execute(StageExecution stage) {
         DynamoStatusContext context = stage.mapTo(DynamoStatusContext.class);
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion("us-east-2").withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_2).withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable(dynamoTableName);
 
