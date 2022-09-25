@@ -31,9 +31,11 @@ public class DynamoStatusTask implements Task {
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_2).withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable(dynamoTableName);
+        logger.info("AAAAAAAA past dynamodb config");
 
         // On successful build, update deployed field in dynamo.
-        if (context.getSuccess()) {
+        if (context.getSuccess() != null) {
+            logger.info("AAAAAAAAAA in successful build");
             Item item = new Item()
                     .withPrimaryKey("branch", context.getBranch(), "status", "DEPLOYED")
                     .withString("image", context.getImage());
@@ -43,6 +45,7 @@ public class DynamoStatusTask implements Task {
             table.deleteItem(deleteSpec);
         } else {
             // Otherwise, update deploying field and add 10 min TTL.
+            logger.info("AAAAAAAAAAA in deploying");
             Item item = new Item()
                     .withPrimaryKey("branch", context.getBranch(), "status", "DEPLOYING")
                     .withString("image", context.getImage())
