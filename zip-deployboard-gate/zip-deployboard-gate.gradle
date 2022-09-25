@@ -30,7 +30,7 @@ repositories {
 
 spinnakerPlugin {
     serviceName = "gate"
-    pluginClass = "io.ziphq.deployboard.DeployboardPlugin"
+    pluginClass = "io.ziphq.deployboard.SnapshotsApiExtensionPlugin"
 }
 
 dependencies {

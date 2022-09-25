@@ -30,7 +30,7 @@ repositories {
 
 spinnakerPlugin {
     serviceName = "orca"
-    pluginClass = "io.ziphq.deployboard.DeployboardPlugin"
+    pluginClass = "io.ziphq.deployboard.DynamoStatusPlugin"
 }
 
 dependencies {
