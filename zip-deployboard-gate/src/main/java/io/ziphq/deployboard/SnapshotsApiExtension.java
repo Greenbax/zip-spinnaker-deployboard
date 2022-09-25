@@ -99,7 +99,7 @@ public class SnapshotsApiExtension implements ApiExtension {
 
         QuerySpec spec = new QuerySpec().withScanIndexForward(false)
                 .withKeyConditionExpression("branch = :branch_name and #sort_key_name < :sort_key")
-                .withFilterExpression("author CONTAINS :author_name")
+                .withFilterExpression("contains(author,:author_name)")
                 .withNameMap(new NameMap()
                         .with("#sort_key_name", "build#ts#author#sha")
                 )
