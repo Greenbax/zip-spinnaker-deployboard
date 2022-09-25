@@ -2,6 +2,7 @@ package io.ziphq.deployboard;
 
 import java.util.*;
 
+import com.amazonaws.auth.WebIdentityTokenCredentialsProvider;
 import org.pf4j.Extension;
 import lombok.Data;
 
@@ -104,7 +105,7 @@ public class SnapshotsApiExtension implements ApiExtension {
                 )
                 .withMaxPageSize(100);
 
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion("us-east-2").withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable(snapshotTableName);
         ItemCollection<QueryOutcome> items = table.query(spec);
@@ -154,7 +155,7 @@ public class SnapshotsApiExtension implements ApiExtension {
                         .withString(":branch_name", branch)
                 );
 
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion("us-east-2").withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable(deployStatusTableName);
         ItemCollection<QueryOutcome> items = table.query(spec);

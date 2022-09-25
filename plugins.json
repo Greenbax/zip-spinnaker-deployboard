@@ -5,12 +5,12 @@
         "provider": "https://github.com/Greenbax/zip-spinnaker-deployboard",
         "releases": [
             {
-                "version": "1.0.2",
-                "date": "2022-09-25T03:06:29.405113Z",
+                "version": "1.0.3",
+                "date": "2022-09-25T03:45:38.439511Z",
                 "requires": "gate>=0.0.0,orca>=0.0.0,deck>=0.0.0",
-                "sha512sum": "8cfae2aa98753730a0f5567049831fd11475e08f2a979b1fcb55a71da53f24eeacb43e20f983fcd654c7094b7675987b85744f77a284a0dd644d1d774f7333ee",
+                "sha512sum": "72c3e4633de52a971543146ef83a59f9090d08e08abffea3f7cd31f374ae220a537e2bbd02fa737788a92d46eb21f1b33ef076963ebba1fbd6352b4af55fe1c0",
                 "state": "",
-                "url": "https://github.com/Greenbax/zip-spinnaker-deployboard/releases/download/v1.0.2/zip-spinnaker-deployboard.zip"
+                "url": "https://github.com/Greenbax/zip-spinnaker-deployboard/releases/download/v1.0.3/zip-spinnaker-deployboard.zip"
             }
         ]
     }

@@ -1,6 +1,6 @@
 package io.ziphq.deployboard;
 
-import com.netflix.spinnaker.orca.api.pipeline.graph.StageGraphBuilder;
+import com.amazonaws.auth.WebIdentityTokenCredentialsProvider;
 import org.pf4j.Extension;
 import org.pf4j.Plugin;
 import org.pf4j.PluginWrapper;
@@ -19,22 +19,22 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 
-public class DeployboardPlugin extends Plugin {
+public class DynamoStatusPlugin extends Plugin {
 
-    public DeployboardPlugin(PluginWrapper wrapper) {
+    public DynamoStatusPlugin(PluginWrapper wrapper) {
         super(wrapper);
     }
 
-    private Logger logger = LoggerFactory.getLogger(DeployboardPlugin.class);
+    private Logger logger = LoggerFactory.getLogger(DynamoStatusPlugin.class);
 
     @Override
     public void start() {
-        logger.info("DeployboardPlugin.start()");
+        logger.info("DynamoStatusPlugin.start()");
     }
 
     @Override
     public void stop() {
-        logger.info("DeployboardPlugin.stop()");
+        logger.info("DynamoStatusPlugin.stop()");
     }
 }
 
@@ -50,8 +50,8 @@ class DynamoStatusTask implements Task {
     private String dynamoTableName = "zip-spinnaker-ci-deploys";
 
     public TaskResult execute(StageExecution stage) {
-        DeployboardContext context = stage.mapTo(DeployboardContext.class);
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+        DynamoStatusContext context = stage.mapTo(DynamoStatusContext.class);
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion("us-east-2").withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable(dynamoTableName);
 
