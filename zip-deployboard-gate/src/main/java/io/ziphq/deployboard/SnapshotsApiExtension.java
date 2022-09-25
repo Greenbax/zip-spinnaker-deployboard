@@ -21,6 +21,8 @@ import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.auth.WebIdentityTokenCredentialsProvider;
 import com.amazonaws.regions.Regions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Data(staticConstructor = "of")
 class GetBuildsResult {
@@ -69,6 +71,7 @@ public class SnapshotsApiExtension implements ApiExtension {
     private String snapshotTableName = "zip-spinnaker-ci-builds";
     private String deployStatusTableName = "zip-spinnaker-ci-deploys";
     private Integer buildLimit = 25;
+    private Logger logger = LoggerFactory.getLogger(SnapshotsApiExtensionPlugin.class);
 
     public String id() {
         return "snapshots";
@@ -115,6 +118,7 @@ public class SnapshotsApiExtension implements ApiExtension {
         Table table = dynamoDB.getTable(snapshotTableName);
         ItemCollection<QueryOutcome> items = table.query(spec);
         ArrayList<Build> builds = new ArrayList<>();
+        Integer currBuildNumber = 0;
         Boolean buildLimitReached = false;
         for (Page<Item, QueryOutcome> page : items.pages()) {
             // Process each item on the current page
@@ -128,8 +132,9 @@ public class SnapshotsApiExtension implements ApiExtension {
                         dbItem.getString("msg"),
                         Long.parseLong(dbItem.getString("ts"))
                 );
+                logger.info("currBuildNumber: %d, buildNumber: %d, size: %d", currBuildNumber, buildNumber, builds.size());
                 // Add a new build if buildNumber is different
-                if (builds.size() == 0 || builds.get(builds.size() - 1).getBuildNumber() != buildNumber) {
+                if (builds.size() == 0 || buildNumber != currBuildNumber) {
                     if (builds.size() == buildLimit) {
                         buildLimitReached = true;
                         break;
@@ -142,6 +147,7 @@ public class SnapshotsApiExtension implements ApiExtension {
                     );
                     build.setStatus(deployedImage, deployingImage);
                     builds.add(build);
+                    currBuildNumber = buildNumber;
                 }
                 builds.get(builds.size() - 1).addCommit(commit);
             }
