@@ -80,14 +80,14 @@ public class SnapshotsApiExtension implements ApiExtension {
     public HttpResponse handle(HttpRequest httpRequest) {
         Map<String, String> params = httpRequest.getParameters();
         String branch = "prod";
-        String author = "";
+        String query = "";
         String lastSortKeySeen = "None";
 
         if (params.containsKey("branch")) {
             branch = params.get("branch");
         }
-        if (params.containsKey("author")) {
-            author = params.get("author");
+        if (params.containsKey("query")) {
+            query = params.get("query");
         }
         if (params.containsKey("lastSortKeySeen")) {
             lastSortKeySeen = params.get("lastSortKeySeen");
@@ -99,14 +99,14 @@ public class SnapshotsApiExtension implements ApiExtension {
 
         QuerySpec spec = new QuerySpec().withScanIndexForward(false)
                 .withKeyConditionExpression("branch = :branch_name and #sort_key_name < :sort_key")
-                .withFilterExpression("contains(author,:author_name)")
+                .withFilterExpression("contains(author,:query) or contains(msg,:query)")
                 .withNameMap(new NameMap()
                         .with("#sort_key_name", "build#ts#author#sha")
                 )
                 .withValueMap(new ValueMap()
                         .withString(":branch_name", branch)
                         .withString(":sort_key", lastSortKeySeen)
-                        .withString(":author_name", author)
+                        .withString(":query", query)
                 )
                 .withMaxPageSize(100);
 
@@ -121,7 +121,7 @@ public class SnapshotsApiExtension implements ApiExtension {
             Iterator<Item> item = page.iterator();
             while (item.hasNext()) {
                 Item dbItem = item.next();
-                Integer buildNumber = Integer.parseInt(dbItem.getString("branch"));
+                Integer buildNumber = Integer.parseInt(dbItem.getString("build"));
                 Commit commit = Commit.of(
                         dbItem.getString("author"),
                         dbItem.getString("sha"),
