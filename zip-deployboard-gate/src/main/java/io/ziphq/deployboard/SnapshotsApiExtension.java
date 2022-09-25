@@ -66,7 +66,7 @@ class BranchStatus {
 @Extension
 public class SnapshotsApiExtension implements ApiExtension {
     private String snapshotTableName = "zip-spinnaker-ci-builds";
-    private String deployStatusTableName = "zip-spinnaker-ci-status";
+    private String deployStatusTableName = "zip-spinnaker-ci-deploys";
     private Integer buildLimit = 25;
 
     public String id() {
@@ -151,10 +151,7 @@ public class SnapshotsApiExtension implements ApiExtension {
     }
 
     public BranchStatus queryBranchStatus(String branch) {
-        QuerySpec spec = new QuerySpec().withKeyConditionExpression("branch = :branch_name")
-                .withValueMap(new ValueMap()
-                        .withString(":branch_name", branch)
-                );
+        QuerySpec spec = new QuerySpec().withHashKey("branch", branch);
 
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_2).withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
         DynamoDB dynamoDB = new DynamoDB(client);
