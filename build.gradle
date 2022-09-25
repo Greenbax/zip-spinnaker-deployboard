@@ -26,19 +26,9 @@ repositories {
   }
 }
 
-String normalizedVersion() {
-  String fullVersion = gitVersion()
-  String normalized = fullVersion.split("-").first()
-  if (fullVersion.contains("dirty")) {
-    return "$normalized-SNAPSHOT"
-  } else {
-    return normalized
-  }
-}
-
 subprojects {
   group = "io.zip.plugin.manifest"
-  version = "${normalizedVersion()}"
+  version = "1.0.2"
 }
 
 apply plugin: "io.spinnaker.plugin.bundler"
@@ -46,5 +36,5 @@ spinnakerBundle {
   pluginId = "zip.deployboard"
   description = "Customization for Zip deploys"
   provider = "https://github.com/Greenbax/zip-spinnaker-deployboard"
-  version = "${normalizedVersion()}"
+  version = "1.0.2"
 }
