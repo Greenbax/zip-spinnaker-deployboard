@@ -2,8 +2,6 @@ package io.ziphq.deployboard;
 
 import java.util.*;
 
-import com.amazonaws.auth.WebIdentityTokenCredentialsProvider;
-import com.amazonaws.regions.Regions;
 import org.pf4j.Extension;
 import lombok.Data;
 
@@ -19,7 +17,10 @@ import com.amazonaws.services.dynamodbv2.document.Page;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.auth.WebIdentityTokenCredentialsProvider;
+import com.amazonaws.regions.Regions;
 
 @Data(staticConstructor = "of")
 class GetBuildsResult {
@@ -97,8 +98,11 @@ public class SnapshotsApiExtension implements ApiExtension {
         String deployingImage = branchStatus.getDeploying();
 
         QuerySpec spec = new QuerySpec().withScanIndexForward(false)
-                .withKeyConditionExpression("branch = :branch_name and build#ts#author#sha < :sort_key")
+                .withKeyConditionExpression("branch = :branch_name and #sort_key_name < :sort_key")
                 .withFilterExpression("author CONTAINS :author_name")
+                .withNameMap(new NameMap()
+                        .with("#sort_key_name", "build#ts#author#sha")
+                )
                 .withValueMap(new ValueMap()
                         .withString(":branch_name", branch)
                         .withString(":sort_key", lastSortKeySeen)
