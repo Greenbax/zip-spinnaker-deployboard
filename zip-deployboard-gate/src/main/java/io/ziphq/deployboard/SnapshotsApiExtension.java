@@ -34,7 +34,7 @@ class Build {
     private final String branch;
     private final Integer buildNumber;
     private final String dockerImage;
-    private final ArrayList<Commit> commits;
+    private ArrayList<Commit> commits = new ArrayList<>();
     private String status;
 
     public void addCommit(Commit commit) {
@@ -143,10 +143,10 @@ public class SnapshotsApiExtension implements ApiExtension {
                     Build build = Build.of(
                             dbItem.getString("branch"),
                             buildNumber,
-                            dbItem.getString("dockerTag"),
-                            new ArrayList<>()
+                            dbItem.getString("dockerTag")
                     );
                     build.setStatus(deployedImage, deployingImage);
+                    logger.info("AAAAAAAAAAAAAAA adding new build");
                     builds.add(build);
                     currBuildNumber = buildNumber;
                 }
