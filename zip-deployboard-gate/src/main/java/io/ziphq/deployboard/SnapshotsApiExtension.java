@@ -21,8 +21,6 @@ import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.auth.WebIdentityTokenCredentialsProvider;
 import com.amazonaws.regions.Regions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Data(staticConstructor = "of")
 class GetBuildsResult {
@@ -71,7 +69,6 @@ public class SnapshotsApiExtension implements ApiExtension {
     private String snapshotTableName = "zip-spinnaker-ci-builds";
     private String deployStatusTableName = "zip-spinnaker-ci-deploys";
     private Integer buildLimit = 25;
-    private Logger logger = LoggerFactory.getLogger(SnapshotsApiExtensionPlugin.class);
 
     public String id() {
         return "snapshots";
@@ -81,7 +78,6 @@ public class SnapshotsApiExtension implements ApiExtension {
         return true;
     }
     public HttpResponse handle(HttpRequest httpRequest) {
-        logger.info("AAAAAAAAAAAAAAAA in handle func");
         Map<String, String> params = httpRequest.getParameters();
         String branch = "prod";
         String query = "";
@@ -133,7 +129,6 @@ public class SnapshotsApiExtension implements ApiExtension {
                         dbItem.getString("msg"),
                         Long.parseLong(dbItem.getString("ts"))
                 );
-                logger.info(String.format("AAAAAAAAAAA currBuildNumber: [%d], buildNumber: [%d], size: [%d]", currBuildNumber, buildNumber, builds.size()));
                 // Add a new build if buildNumber is different
                 if (!buildNumber.equals(currBuildNumber)) {
                     if (buildLimit.equals(builds.size())) {
@@ -146,7 +141,6 @@ public class SnapshotsApiExtension implements ApiExtension {
                             dbItem.getString("dockerTag")
                     );
                     build.setStatus(deployedImage, deployingImage);
-                    logger.info("AAAAAAAAAAAAAAA adding new build");
                     builds.add(build);
                     currBuildNumber = buildNumber;
                 }
