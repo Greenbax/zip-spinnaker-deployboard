@@ -7,7 +7,6 @@ import { Snapshots, SnapshotsDataSource } from './snapshots';
 export const plugin: IDeckPlugin = {
   stages: [dynamoStatusStage],
   initialize: () => {
-    console.log('initializing');
     const injector = (window as any).spinnaker.$injector;
     const applicationState: ApplicationStateProvider = injector.get('applicationState');
     applicationState.addChildState({

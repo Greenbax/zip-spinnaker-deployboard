@@ -4,25 +4,45 @@ export interface SnapshotConfigType {
   pipeline: string;
 }
 
-export const SNAPSHOT_CONFIGS: SnapshotConfigType[] = [
-  {
-    gitBranch: 'master',
-    label: 'Staging',
-    pipeline: 'Staging',
-  },
-  {
-    gitBranch: 'production-release-branch-test',
-    label: 'Next',
-    pipeline: 'Next',
-  },
-  {
-    gitBranch: 'qa',
-    label: 'QA',
-    pipeline: 'QA',
-  },
-  {
-    gitBranch: 'prod',
-    label: 'Production',
-    pipeline: 'Website deployment',
-  },
-];
+export const SNAPSHOT_CONFIGS: Map<string, SnapshotConfigType> = new Map<string, SnapshotConfigType>([
+  [
+    'prod',
+    {
+      gitBranch: 'prod',
+      label: 'Production',
+      pipeline: 'Website deployment',
+    },
+  ],
+  [
+    'master',
+    {
+      gitBranch: 'master',
+      label: 'Staging',
+      pipeline: 'Staging',
+    },
+  ],
+  [
+    'production-release-branch-test',
+    {
+      gitBranch: 'production-release-branch-test',
+      label: 'Next',
+      pipeline: 'Next',
+    },
+  ],
+  [
+    'qa',
+    {
+      gitBranch: 'qa',
+      label: 'QA',
+      pipeline: 'QA',
+    },
+  ],
+  [
+    'czhen-test',
+    {
+      gitBranch: 'czhen-test',
+      label: 'Test',
+      pipeline: 'test-czhen',
+    },
+  ],
+]);

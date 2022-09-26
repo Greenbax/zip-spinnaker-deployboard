@@ -2,12 +2,33 @@ import type { Application, IDataSourceConfig } from '@spinnaker/core';
 import { REST } from '@spinnaker/core';
 
 export interface SnapshotType {
+  branch: string;
+  buildNumber: number;
+  dockerImage: string;
+  status: string;
+  commits: CommitType[];
+}
+
+export interface CommitType {
+  author: string;
   sha: string;
   message: string;
-  author: string;
-  timestamp: string;
-  branch: string;
-  currentlyDeployed?: string;
+  ts: string;
+}
+
+interface SnapshotAPI {
+  builds: Array<{
+    branch: string;
+    buildNumber: number;
+    dockerImage: string;
+    status: string;
+    commits: Array<{
+      author: string;
+      sha: string;
+      message: string;
+      ts: string;
+    }>;
+  }>;
 }
 
 export const SnapshotsDataSource: IDataSourceConfig<SnapshotType[]> = {
@@ -17,41 +38,26 @@ export const SnapshotsDataSource: IDataSourceConfig<SnapshotType[]> = {
   activeState: '**.snapshots.**',
   visible: true,
   sref: '.snapshots',
-  defaultData: [
-    {
-      author: 'test',
-      sha: 'test',
-      message: 'test',
-      timestamp: 'test',
-      branch: 'test',
-      currentlyDeployed: 'test',
-    },
-    {
-      author: 'test',
-      sha: 'test',
-      message: 'test',
-      timestamp: 'test',
-      branch: 'test',
-      currentlyDeployed: 'test',
-    },
-    {
-      author: 'test',
-      sha: 'test',
-      message: 'test',
-      timestamp: 'test',
-      branch: 'test',
-      currentlyDeployed: 'test',
-    },
-  ],
+  defaultData: [],
   description: 'Snapshot View',
   iconName: 'build',
-  loader: (application: Application) => SnapshotsReader.getBuilds(),
+  loader: (application: Application) => SnapshotsReader.getBuilds('prod'),
   onLoad: (application: Application, data: any) => Promise.resolve(data),
   lazy: true,
 };
 
-const transformSnapshot = (build) => {
-  return;
+const transformSnapshot = (resp: SnapshotAPI): SnapshotType[] => {
+  return resp.builds.map((val) => ({
+    branch: val.branch,
+    buildNumber: val.buildNumber,
+    dockerImage: val.dockerImage,
+    status: val.status,
+    commits: transformCommits(val.commits),
+  }));
+};
+
+const transformCommits = (commits: SnapshotAPI['builds'][0]['commits']): CommitType[] => {
+  return commits.map((val): CommitType => ({ author: val.author, sha: val.sha, message: val.message, ts: val.ts }));
 };
 
 export class SnapshotsReader {
@@ -59,9 +65,19 @@ export class SnapshotsReader {
     return 4095;
   }
 
-  public static getBuilds(): PromiseLike<SnapshotType[]> {
-    return REST('snapshots/builds')
+  public static getBuilds(branch: string, query?: string, lastSortKeySeen?: string): PromiseLike<SnapshotType[]> {
+    const searchQuery: any = { branch };
+    if (query) {
+      searchQuery['query'] = query;
+    }
+    if (lastSortKeySeen) {
+      searchQuery['lastSortKeySeen'] = lastSortKeySeen;
+    }
+    return REST('/extensions/snapshots')
+      .query(searchQuery)
       .get()
-      .then((builds) => builds.map((build: any) => transformSnapshot(build)));
+      .then((builds) => {
+        return transformSnapshot(builds);
+      });
   }
 }

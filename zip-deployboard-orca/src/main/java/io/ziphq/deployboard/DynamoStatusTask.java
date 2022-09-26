@@ -1,7 +1,5 @@
 package io.ziphq.deployboard;
 
-import java.util.*;
-
 import com.amazonaws.auth.WebIdentityTokenCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -14,8 +12,6 @@ import com.netflix.spinnaker.orca.api.pipeline.Task;
 import com.netflix.spinnaker.orca.api.pipeline.TaskResult;
 import com.netflix.spinnaker.orca.api.pipeline.models.StageExecution;
 import org.pf4j.Extension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Extension
 public class DynamoStatusTask implements Task {
@@ -28,7 +24,7 @@ public class DynamoStatusTask implements Task {
         Table table = dynamoDB.getTable(dynamoTableName);
 
         // On successful build, update deployed field in dynamo.
-        if (context.getSuccess()) {
+        if (context.getSuccess() != null) {
             Item item = new Item()
                     .withPrimaryKey("branch", context.getBranch(), "status", "DEPLOYED")
                     .withString("image", context.getImage());
