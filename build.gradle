@@ -31,5 +31,10 @@ spinnakerBundle {
   pluginId = "zip.deployboard"
   description = "Customization for Zip deploys"
   provider = "https://github.com/Greenbax/zip-spinnaker-deployboard"
+  version = "1.0.21"
+}
+
+subprojects {
+  group = "io.zip.plugin.manifest"
   version = "1.0.20"
 }
