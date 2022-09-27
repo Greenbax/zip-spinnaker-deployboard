@@ -39,11 +39,13 @@ class Build {
         this.commits.add(commit);
     }
 
-    public void setStatus(String deployedImage, String deployingImage) {
-        if (this.getDockerImage().equals(deployedImage)) {
+    public void setDeployStatus(BranchStatus status) {
+        if (this.getDockerImage().equals(status.getDeployed())) {
             this.setStatus("DEPLOYED");
-        } else if (this.getDockerImage().equals(deployingImage)) {
+        } else if (this.getDockerImage().equals(status.getDeploying())) {
             this.setStatus("DEPLOYING");
+        } else if (this.getDockerImage().equals(status.getLastDeployed())) {
+            this.setStatus("LAST_DEPLOYED");
         } else {
             this.setStatus("NOT_DEPLOYED");
         }
@@ -62,6 +64,7 @@ class Commit {
 class BranchStatus {
     private String deployed;
     private String deploying;
+    private String lastDeployed;
 }
 
 @Extension
@@ -94,8 +97,6 @@ public class SnapshotsApiExtension implements ApiExtension {
         }
 
         BranchStatus branchStatus = this.queryBranchStatus(branch);
-        String deployedImage = branchStatus.getDeployed();
-        String deployingImage = branchStatus.getDeploying();
 
         QuerySpec spec = new QuerySpec().withScanIndexForward(false)
                 .withKeyConditionExpression("branch = :branch_name and #sort_key_name < :sort_key")
@@ -140,7 +141,7 @@ public class SnapshotsApiExtension implements ApiExtension {
                             buildNumber,
                             dbItem.getString("dockerTag")
                     );
-                    build.setStatus(deployedImage, deployingImage);
+                    build.setDeployStatus(branchStatus);
                     builds.add(build);
                     currBuildNumber = buildNumber;
                 }
@@ -173,6 +174,8 @@ public class SnapshotsApiExtension implements ApiExtension {
                 res.setDeployed(item.getString("image"));
             } else if (status.equals("DEPLOYING")) {
                 res.setDeploying(item.getString("image"));
+            } else if (status.equals("LAST_DEPLOYED")) {
+                res.setLastDeployed(item.getString("image"));
             }
         }
         return res;

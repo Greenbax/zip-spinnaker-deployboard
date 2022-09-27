@@ -1,4 +1,4 @@
-import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
+import { ArrowDropDown, ArrowRight, Restore } from '@material-ui/icons';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { CheckmarkIcon, LoaderIcon } from 'react-hot-toast';
@@ -43,10 +43,11 @@ export const SnapshotsTable = ({
       <thead>
         <tr>
           <th style={{ width: '5%' }}></th>
-          <th style={{ width: '10%' }}>Status</th>
+          <th style={{ width: '5%' }}>Status</th>
           <th style={{ width: '15%' }}>Jenkins Buid Number</th>
-          <th style={{ width: '55%' }}>Commits</th>
-          <th style={{ width: '15%' }}>Actions</th>
+          <th style={{ width: '45%' }}>Commits</th>
+          <th style={{ width: '25%' }}>Docker Image Tag</th>
+          <th style={{ width: '5%' }}>Actions</th>
         </tr>
       </thead>
 
@@ -68,6 +69,8 @@ export const SnapshotsTable = ({
                       <LoaderIcon />
                     ) : build.status === 'DEPLOYED' ? (
                       <CheckmarkIcon />
+                    ) : build.status === 'LAST_DEPLOYED' ? (
+                      <Restore />
                     ) : (
                       <></>
                     )}
@@ -75,6 +78,7 @@ export const SnapshotsTable = ({
                 </td>
                 <td>{build.buildNumber}</td>
                 <td>{getCommitSummary(build.commits)}</td>
+                <td>{build.dockerImage}</td>
                 <td>
                   <Button
                     onClick={(e) => {
@@ -88,7 +92,7 @@ export const SnapshotsTable = ({
               </tr>
               {expandedBuilds.has(build.buildNumber) && (
                 <tr>
-                  <td colSpan={5}>
+                  <td colSpan={6}>
                     <table className="table">
                       <thead>
                         <tr>

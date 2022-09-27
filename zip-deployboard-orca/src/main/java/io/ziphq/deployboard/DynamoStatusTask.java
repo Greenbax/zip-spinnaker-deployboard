@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.netflix.spinnaker.orca.api.pipeline.Task;
 import com.netflix.spinnaker.orca.api.pipeline.TaskResult;
 import com.netflix.spinnaker.orca.api.pipeline.models.StageExecution;
@@ -25,10 +26,25 @@ public class DynamoStatusTask implements Task {
 
         // On successful build, update deployed field in dynamo.
         if (context.getSuccess() != null) {
+            // Set currently deployed build as last deployed.
+            GetItemSpec getItemSpec = new GetItemSpec()
+                    .withPrimaryKey("branch", context.getBranch(), "status", "DEPLOYED");
+            Item lastDeploy = table.getItem(getItemSpec);
+            if (lastDeploy != null) {
+                String lastDeployedImage = lastDeploy.getString("image");
+                Item item = new Item()
+                        .withPrimaryKey("branch", context.getBranch(), "status", "LAST_DEPLOYED")
+                        .withString("image", lastDeployedImage);
+                table.putItem(item);
+            }
+
+            // Update currently deployed build.
             Item item = new Item()
                     .withPrimaryKey("branch", context.getBranch(), "status", "DEPLOYED")
                     .withString("image", context.getImage());
             table.putItem(item);
+
+            // Delete deploying build.
             DeleteItemSpec deleteSpec = new DeleteItemSpec()
                     .withPrimaryKey("branch", context.getBranch(), "status", "DEPLOYING");
             table.deleteItem(deleteSpec);
