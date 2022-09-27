@@ -72,6 +72,7 @@ public class SnapshotsApiExtension implements ApiExtension {
     private String snapshotTableName = "zip-spinnaker-ci-builds";
     private String deployStatusTableName = "zip-spinnaker-ci-deploys";
     private Integer buildLimit = 25;
+    private String dockerPrefix = "242230929264.dkr.ecr.us-east-2.amazonaws.com/evergreen-server:";
 
     public String id() {
         return "snapshots";
@@ -139,7 +140,7 @@ public class SnapshotsApiExtension implements ApiExtension {
                     Build build = Build.of(
                             dbItem.getString("branch"),
                             buildNumber,
-                            dbItem.getString("dockerTag")
+                            String.format("%s%s", this.dockerPrefix, dbItem.getString("dockerTag"))
                     );
                     build.setDeployStatus(branchStatus);
                     builds.add(build);

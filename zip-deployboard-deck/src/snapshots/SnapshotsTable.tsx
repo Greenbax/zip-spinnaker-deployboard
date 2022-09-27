@@ -5,6 +5,8 @@ import { CheckmarkIcon, LoaderIcon } from 'react-hot-toast';
 
 import type { CommitType, SnapshotType } from './SnapshotsDataSource';
 
+const DOCKER_PREFIX = '242230929264.dkr.ecr.us-east-2.amazonaws.com/';
+
 export interface SnapshotsTableProps {
   builds: SnapshotType[];
   expandedBuilds: Set<number>;
@@ -78,7 +80,7 @@ export const SnapshotsTable = ({
                 </td>
                 <td>{build.buildNumber}</td>
                 <td>{getCommitSummary(build.commits)}</td>
-                <td>{build.dockerImage}</td>
+                <td>{build.dockerImage.replace(DOCKER_PREFIX, '')}</td>
                 <td>
                   <Button
                     onClick={(e) => {
