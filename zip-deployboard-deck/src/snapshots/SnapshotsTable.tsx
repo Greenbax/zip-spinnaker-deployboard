@@ -70,7 +70,7 @@ export const SnapshotsTable = ({
                     ) : build.status === 'DEPLOYED' ? (
                       <CheckmarkIcon />
                     ) : build.status === 'LAST_DEPLOYED' ? (
-                      <Restore />
+                      <Restore fontSize="large" />
                     ) : (
                       <></>
                     )}
