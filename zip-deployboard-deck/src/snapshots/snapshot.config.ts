@@ -22,9 +22,9 @@ export const SNAPSHOT_CONFIGS: Map<string, SnapshotConfigType> = new Map<string,
     },
   ],
   [
-    'production-release-branch-test',
+    'test-build-branch',
     {
-      gitBranch: 'production-release-branch-test',
+      gitBranch: 'test-build-branch',
       label: 'Next',
       pipeline: 'Next',
     },
