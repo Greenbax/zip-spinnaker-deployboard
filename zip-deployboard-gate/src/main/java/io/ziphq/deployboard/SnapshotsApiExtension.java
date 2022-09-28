@@ -62,9 +62,9 @@ class Commit {
 
 @Data(staticConstructor = "of")
 class BranchStatus {
-    private String deployed;
-    private String deploying;
-    private String lastDeployed;
+    private String deployed = "";
+    private String deploying = "";
+    private String lastDeployed = "";
 }
 
 @Extension
@@ -101,7 +101,7 @@ public class SnapshotsApiExtension implements ApiExtension {
 
         QuerySpec spec = new QuerySpec().withScanIndexForward(false)
                 .withKeyConditionExpression("branch = :branch_name and #sort_key_name < :sort_key")
-                .withFilterExpression("contains(author,:query) or contains(msg,:query)")
+                .withFilterExpression("contains(author,:query) or contains(msg,:query) or contains(dockerTag,:deployed_tag) or contains(dockerTag,:deploying_tag) or contains(dockerTag,:last_deployed_tag)")
                 .withNameMap(new NameMap()
                         .with("#sort_key_name", "build#ts#author#sha")
                 )
@@ -109,6 +109,9 @@ public class SnapshotsApiExtension implements ApiExtension {
                         .withString(":branch_name", branch)
                         .withString(":sort_key", lastSortKeySeen)
                         .withString(":query", query)
+                        .withString(":deployed_tag", branchStatus.getDeployed().replaceFirst(this.dockerPrefix, ""))
+                        .withString(":deploying_tag", branchStatus.getDeploying().replaceFirst(this.dockerPrefix, ""))
+                        .withString(":last_deployed_tag", branchStatus.getLastDeployed().replaceFirst(this.dockerPrefix, ""))
                 )
                 .withMaxPageSize(100);
 
