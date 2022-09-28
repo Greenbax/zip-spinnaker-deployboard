@@ -11,7 +11,12 @@ export const plugin: IDeckPlugin = {
     const applicationState: ApplicationStateProvider = injector.get('applicationState');
     applicationState.addChildState({
       name: 'snapshots',
-      url: '/snapshots',
+      url: '/snapshots?branch',
+      params: {
+        branch: {
+          value: 'prod',
+        },
+      },
       views: {
         insight: {
           component: Snapshots,

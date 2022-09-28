@@ -3,6 +3,8 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { CheckmarkIcon, LoaderIcon } from 'react-hot-toast';
 
+import { Tooltip } from '@spinnaker/core';
+
 import type { CommitType, SnapshotType } from './SnapshotsDataSource';
 
 const DOCKER_PREFIX = '242230929264.dkr.ecr.us-east-2.amazonaws.com/';
@@ -15,14 +17,21 @@ export interface SnapshotsTableProps {
   toggleDeploy: (sha: string) => void;
 }
 
-const getCommitSummary = (commits: CommitType[]): string => {
+const getCommitSummary = (commits: CommitType[]): React.ReactNode => {
   if (commits.length == 0) {
     return '';
   }
   if (commits.length == 1) {
     return commits[0].message;
   }
-  return `${commits[0].message} + ${commits.length - 1} ${commits.length === 2 ? 'other' : 'others'}...`;
+  return (
+    <p>
+      {`${commits[0].message}`}{' '}
+      <b>
+        <em>{`+ ${commits.length - 1} ${commits.length === 2 ? 'other' : 'others'}...`}</em>
+      </b>
+    </p>
+  );
 };
 
 export const SnapshotsTable = ({
@@ -68,11 +77,17 @@ export const SnapshotsTable = ({
                 <td>
                   <div style={{ display: 'flex', textAlign: 'center', alignItems: 'center' }}>
                     {build.status === 'DEPLOYING' ? (
-                      <LoaderIcon />
+                      <Tooltip value="Deploying...">
+                        <LoaderIcon />
+                      </Tooltip>
                     ) : build.status === 'DEPLOYED' ? (
-                      <CheckmarkIcon />
+                      <Tooltip value="Current deployed">
+                        <CheckmarkIcon />
+                      </Tooltip>
                     ) : build.status === 'LAST_DEPLOYED' ? (
-                      <Restore fontSize="large" />
+                      <Tooltip value="Last deployed">
+                        <Restore fontSize="large" />
+                      </Tooltip>
                     ) : (
                       <></>
                     )}

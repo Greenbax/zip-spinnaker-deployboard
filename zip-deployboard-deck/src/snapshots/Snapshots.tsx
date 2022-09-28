@@ -1,4 +1,5 @@
 import { ArrowDropDown } from '@material-ui/icons';
+import { UISref, useCurrentStateAndParams } from '@uirouter/react';
 import { cloneDeep } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Modal, ModalBody } from 'react-bootstrap';
@@ -23,8 +24,9 @@ const getBuildsWrapped = (branch: string, query?: string, lastSortKeySeen?: stri
   SnapshotsReader.getBuilds(branch, query, lastSortKeySeen);
 
 export function Snapshots(props: SnapshotsProps) {
+  const { params } = useCurrentStateAndParams();
+  const branch = params.branch;
   const [query, setQuery] = useState('');
-  const [branch, setBranch] = useState('prod');
   const [lastSortKeySeen, setLastSortKeySeen] = useState('');
   const [deployBuild, setDeployBuild] = useState('');
   const [deployPipeline, setDeployPipeline] = useState('prod');
@@ -40,12 +42,7 @@ export function Snapshots(props: SnapshotsProps) {
     setBuilds(dedupeBuilds(builds.concat(result)));
   }, [result]);
 
-  // Use the wrapped state setters so we can clear branch data cache.
-  const setBranchWrapped = (branch: string) => {
-    setBuilds([]);
-    setLastSortKeySeen('');
-    setBranch(branch);
-  };
+  // Use a wrapped state setter so we can clear branch data cache.
   const setQueryWrapped = (query: string) => {
     setBuilds([]);
     setLastSortKeySeen('');
@@ -120,7 +117,9 @@ export function Snapshots(props: SnapshotsProps) {
                 <Dropdown.Menu>
                   {Array.from(SNAPSHOT_CONFIGS.values()).map((config) => (
                     <li>
-                      <a onClick={() => setBranchWrapped(config.gitBranch)}>{config.label}</a>
+                      <UISref to="home.applications.application.snapshots" params={{ branch: config.gitBranch }}>
+                        <a>{config.label}</a>
+                      </UISref>
                     </li>
                   ))}
                 </Dropdown.Menu>
