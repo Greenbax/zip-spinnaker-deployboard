@@ -84,7 +84,7 @@ export function Snapshots(props: SnapshotsProps) {
         onClose={() => setDeployBuild('')}
         onSubmit={startPipeline}
       />
-      <div style={{ width: '95%' }}>
+      <div style={{ width: '95%', overflow: 'hidden' }}>
         <InfiniteScroll
           hasMore={builds.length % 25 === 0}
           dataLength={builds.length}
