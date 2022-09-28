@@ -98,21 +98,31 @@ public class SnapshotsApiExtension implements ApiExtension {
         }
 
         BranchStatus branchStatus = this.queryBranchStatus(branch);
+        String filterExpression = "contains(author,:query) or contains(msg,:query)";
+        ValueMap valueMap = new ValueMap()
+                .withString(":branch_name", branch)
+                .withString(":sort_key", lastSortKeySeen)
+                .withString(":query", query);
+        if (!branchStatus.getDeployed().equals("")) {
+            filterExpression += " or contains(dockerTag,:deployed_tag)";
+            valueMap.withString(":deployed_tag", branchStatus.getDeployed().replaceFirst(this.dockerPrefix, ""));
+        }
+        if (!branchStatus.getDeploying().equals("")) {
+            filterExpression += " or contains(dockerTag,:deploying_tag)";
+            valueMap.withString(":deploying_tag", branchStatus.getDeploying().replaceFirst(this.dockerPrefix, ""));
+        }
+        if (!branchStatus.getLastDeployed().equals("")) {
+            filterExpression += " or contains(dockerTag,:last_deployed_tag)";
+            valueMap.withString(":last_deployed_tag", branchStatus.getLastDeployed().replaceFirst(this.dockerPrefix, ""));
+        }
 
         QuerySpec spec = new QuerySpec().withScanIndexForward(false)
                 .withKeyConditionExpression("branch = :branch_name and #sort_key_name < :sort_key")
-                .withFilterExpression("contains(author,:query) or contains(msg,:query) or contains(dockerTag,:deployed_tag) or contains(dockerTag,:deploying_tag) or contains(dockerTag,:last_deployed_tag)")
+                .withFilterExpression(filterExpression)
                 .withNameMap(new NameMap()
                         .with("#sort_key_name", "build#ts#author#sha")
                 )
-                .withValueMap(new ValueMap()
-                        .withString(":branch_name", branch)
-                        .withString(":sort_key", lastSortKeySeen)
-                        .withString(":query", query)
-                        .withString(":deployed_tag", branchStatus.getDeployed().replaceFirst(this.dockerPrefix, ""))
-                        .withString(":deploying_tag", branchStatus.getDeploying().replaceFirst(this.dockerPrefix, ""))
-                        .withString(":last_deployed_tag", branchStatus.getLastDeployed().replaceFirst(this.dockerPrefix, ""))
-                )
+                .withValueMap(valueMap)
                 .withMaxPageSize(100);
 
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_2).withCredentials(WebIdentityTokenCredentialsProvider.create()).build();
