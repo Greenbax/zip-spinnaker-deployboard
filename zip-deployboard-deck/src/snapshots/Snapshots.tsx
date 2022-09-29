@@ -16,6 +16,8 @@ import { SNAPSHOT_CONFIGS } from './snapshot.config';
 
 import './Snapshots.less';
 
+export const DOCKER_PREFIX = '242230929264.dkr.ecr.us-east-2.amazonaws.com/evergreen-server:';
+
 interface SnapshotsProps {
   app: Application;
 }
@@ -154,8 +156,8 @@ interface SnapshotDeployModalProps {
 const SnapshotDeployModal = ({ pipeline, setPipeline, image, onClose, onSubmit }: SnapshotDeployModalProps) => {
   const command: IPipelineCommand = {
     pipelineName: pipeline,
-    parameters: { image },
-    trigger: { enabled: true, type: 'manual', parameters: { image } },
+    parameters: { image, version: image.replace(DOCKER_PREFIX, '') },
+    trigger: { enabled: true, type: 'manual', parameters: { image, version: image.replace(DOCKER_PREFIX, '') } },
   };
   return (
     <Modal show={Boolean(image)} onHide={onClose} className="snapshot-modal">

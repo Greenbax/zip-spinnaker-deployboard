@@ -5,9 +5,8 @@ import { CheckmarkIcon, LoaderIcon } from 'react-hot-toast';
 
 import { Tooltip } from '@spinnaker/core';
 
+import { DOCKER_PREFIX } from './Snapshots';
 import type { CommitType, SnapshotType } from './SnapshotsDataSource';
-
-const DOCKER_PREFIX = '242230929264.dkr.ecr.us-east-2.amazonaws.com/';
 
 export interface SnapshotsTableProps {
   builds: SnapshotType[];
