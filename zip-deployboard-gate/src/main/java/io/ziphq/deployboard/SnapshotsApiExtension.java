@@ -32,6 +32,7 @@ class Build {
     private final String branch;
     private final Integer buildNumber;
     private final String dockerImage;
+    private final Integer ttl;
     private ArrayList<Commit> commits = new ArrayList<>();
     private String status;
 
@@ -69,7 +70,7 @@ class BranchStatus {
 
 @Extension
 public class SnapshotsApiExtension implements ApiExtension {
-    private String snapshotTableName = "zip-spinnaker-ci-builds";
+    private String snapshotTableName = "zip-spinnaker-ci-snapshots";
     private String deployStatusTableName = "zip-spinnaker-ci-deploys";
     private Integer buildLimit = 25;
     private String dockerPrefix = "242230929264.dkr.ecr.us-east-2.amazonaws.com/evergreen-server:";
@@ -120,7 +121,7 @@ public class SnapshotsApiExtension implements ApiExtension {
                 .withKeyConditionExpression("branch = :branch_name and #sort_key_name < :sort_key")
                 .withFilterExpression(filterExpression)
                 .withNameMap(new NameMap()
-                        .with("#sort_key_name", "build#ts#author#sha")
+                        .with("#sort_key_name", "ttl#build#ts#author#sha")
                 )
                 .withValueMap(valueMap)
                 .withMaxPageSize(100);
@@ -153,7 +154,8 @@ public class SnapshotsApiExtension implements ApiExtension {
                     Build build = Build.of(
                             dbItem.getString("branch"),
                             buildNumber,
-                            String.format("%s%s", this.dockerPrefix, dbItem.getString("dockerTag"))
+                            String.format("%s%s", this.dockerPrefix, dbItem.getString("dockerTag")),
+                            dbItem.getInt("ttl")
                     );
                     build.setDeployStatus(branchStatus);
                     builds.add(build);

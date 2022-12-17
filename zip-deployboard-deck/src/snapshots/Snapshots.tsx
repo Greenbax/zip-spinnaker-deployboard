@@ -98,7 +98,9 @@ export function Snapshots(props: SnapshotsProps) {
             }
             const lastBuild = builds[builds.length - 1];
             const lastCommit = lastBuild.commits[lastBuild.commits.length - 1];
-            setLastSortKeySeen(`${lastBuild.buildNumber}#${lastCommit.ts}#${lastCommit.author}#${lastCommit.sha}`);
+            setLastSortKeySeen(
+              `${lastBuild.ttl}#${lastBuild.buildNumber}#${lastCommit.ts}#${lastCommit.author}#${lastCommit.sha}`,
+            );
           }}
         >
           <div style={{ display: 'flex', marginBottom: '20px' }}>

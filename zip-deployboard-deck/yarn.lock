@@ -1421,10 +1421,10 @@
   resolved "https://registry.npmjs.org/@spinnaker/mocks/-/mocks-1.0.7.tgz"
   integrity sha512-WXoNtZoFZFNDTrckCbbTShxoRN088IN+awWweNNv89EU4GsMX8HnnG/9J6N9rAt0R3ZgzhJmaNG06/JHHBzxEw==
 
-"@spinnaker/pluginsdk-peerdeps@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/@spinnaker/pluginsdk-peerdeps/-/pluginsdk-peerdeps-0.3.0.tgz"
-  integrity sha512-UxQ1Vfba04cw3xwFr2CEBXRXnApQfBBBwI8xNBVTj8eQrm8TqROJnRLgFGhq8W9QhPQuLw4HU9YJbTF5mNBSTQ==
+"@spinnaker/pluginsdk-peerdeps@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@spinnaker/pluginsdk-peerdeps/-/pluginsdk-peerdeps-0.5.0.tgz#2c28a29dae9060e5d69bdd0fcc321de90543264a"
+  integrity sha512-mctpEbFdpvBq4cQwW45ufYEbHPzsXit0GJbKKZqGzTl5ffbeZHWbD6OvtPb0bPrwUqSyoxuzg5r5Bj7hJQFwCg==
 
 "@spinnaker/pluginsdk@0.3.0":
   version "0.3.0"

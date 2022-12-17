@@ -6,6 +6,7 @@ export interface SnapshotType {
   buildNumber: number;
   dockerImage: string;
   status: string;
+  ttl: number;
   commits: CommitType[];
 }
 
@@ -22,6 +23,7 @@ interface SnapshotAPI {
     buildNumber: number;
     dockerImage: string;
     status: string;
+    ttl: number;
     commits: Array<{
       author: string;
       sha: string;
@@ -52,6 +54,7 @@ const transformSnapshot = (resp: SnapshotAPI): SnapshotType[] => {
     buildNumber: val.buildNumber,
     dockerImage: val.dockerImage,
     status: val.status,
+    ttl: val.ttl,
     commits: transformCommits(val.commits),
   }));
 };
