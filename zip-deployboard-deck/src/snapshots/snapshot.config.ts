@@ -4,6 +4,8 @@ export interface SnapshotConfigType {
   pipeline: string;
 }
 
+export const NEXT_PREVIEW = 'Next-Preview';
+
 export const SNAPSHOT_CONFIGS: Map<string, SnapshotConfigType> = new Map<string, SnapshotConfigType>([
   [
     'prod',
@@ -25,8 +27,8 @@ export const SNAPSHOT_CONFIGS: Map<string, SnapshotConfigType> = new Map<string,
     'test-build-branch',
     {
       gitBranch: 'test-build-branch',
-      label: 'Next',
-      pipeline: 'Next',
+      label: NEXT_PREVIEW,
+      pipeline: NEXT_PREVIEW,
     },
   ],
   [

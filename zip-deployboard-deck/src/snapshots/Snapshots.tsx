@@ -2,7 +2,7 @@ import { ArrowDropDown } from '@material-ui/icons';
 import { UISref, useCurrentStateAndParams } from '@uirouter/react';
 import { cloneDeep } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { Button, Dropdown, Modal, ModalBody } from 'react-bootstrap';
+import { Button, Dropdown, Form, Modal, ModalBody } from 'react-bootstrap';
 import toast, { LoaderIcon } from 'react-hot-toast';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -12,7 +12,7 @@ import { ModalClose, ReactInjector, TextInput, useData } from '@spinnaker/core';
 import type { SnapshotType } from './SnapshotsDataSource';
 import { SnapshotsReader } from './SnapshotsDataSource';
 import { SnapshotsTable } from './SnapshotsTable';
-import { SNAPSHOT_CONFIGS } from './snapshot.config';
+import { NEXT_PREVIEW, SNAPSHOT_CONFIGS } from './snapshot.config';
 
 import './Snapshots.less';
 
@@ -64,6 +64,13 @@ export function Snapshots(props: SnapshotsProps) {
   };
 
   const startPipeline = (command: IPipelineCommand): PromiseLike<void> => {
+    if (
+      command.pipelineName === NEXT_PREVIEW &&
+      (!command.parameters.name || (command.parameters.name && command.parameters.name.indexOf(' ') >= 0))
+    ) {
+      window.alert('Need a name without spaces for the environment');
+      return;
+    }
     const { executionService } = ReactInjector;
     const buildsCopy = cloneDeep(builds);
     buildsCopy.find((val) => val.dockerImage === deployBuild).status = 'DEPLOYING';
@@ -156,10 +163,16 @@ interface SnapshotDeployModalProps {
 }
 
 const SnapshotDeployModal = ({ pipeline, setPipeline, image, onClose, onSubmit }: SnapshotDeployModalProps) => {
+  const [hours, setHours] = useState(1);
+  const [name, setName] = useState('');
   const command: IPipelineCommand = {
     pipelineName: pipeline,
-    parameters: { image, version: image.replace(DOCKER_PREFIX, '') },
-    trigger: { enabled: true, type: 'manual', parameters: { image, version: image.replace(DOCKER_PREFIX, '') } },
+    parameters: { image, version: image.replace(DOCKER_PREFIX, ''), name },
+    trigger: {
+      enabled: true,
+      type: 'manual',
+      parameters: { image, version: image.replace(DOCKER_PREFIX, ''), name, hours }, // Ignore error, using for pipelines
+    },
   };
   return (
     <Modal show={Boolean(image)} onHide={onClose} className="snapshot-modal">
@@ -178,12 +191,63 @@ const SnapshotDeployModal = ({ pipeline, setPipeline, image, onClose, onSubmit }
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {Array.from(SNAPSHOT_CONFIGS.values()).map((config) => (
-              <li>
-                <a onClick={() => setPipeline(config.gitBranch)}>{config.label}</a>
-              </li>
+              <Dropdown.Item>
+                <li>
+                  <a onClick={() => setPipeline(config.gitBranch)}>{config.label}</a>
+                </li>
+              </Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>
+        {pipeline === NEXT_PREVIEW && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              paddingTop: '16px',
+            }}
+          >
+            <div style={{ display: 'flex', width: '70%' }}>
+              <Form>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    style={{ maxWidth: '200px' }}
+                    type="name"
+                    placeholder="Enter name"
+                    onChange={(e) => setName(e.target.value.trim())}
+                  />
+                  <Form.Text className="text-muted">
+                    You can access this at{' '}
+                    <a target="_blank" href={'https://' + name + '.next-preview.ziphq.com'}>
+                      {name}.next-preview.ziphq.com
+                    </a>
+                  </Form.Text>
+                </Form.Group>
+              </Form>
+            </div>
+            <div style={{ display: 'flex', width: '30%', flexDirection: 'column' }}>
+              <label>Select number of hours </label>
+              <Dropdown>
+                <Dropdown.Toggle>
+                  <span style={{ display: 'flex', alignItems: 'center' }}>
+                    {`Hours: ${hours}`}
+                    <ArrowDropDown />
+                  </span>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {Array.from([1, 2, 3, 4]).map((hrs) => (
+                    <Dropdown.Item>
+                      <li>
+                        <a onClick={() => setHours(hrs)}>{hrs}</a>
+                      </li>
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
+        )}
       </ModalBody>
       <Modal.Footer>
         <Button onClick={() => onSubmit(command)}>Deploy</Button>
