@@ -215,7 +215,7 @@ const SnapshotDeployModal = ({ pipeline, setPipeline, image, onClose, onSubmit }
                     style={{ maxWidth: '200px' }}
                     type="name"
                     placeholder="Enter name"
-                    onChange={(e) => setName(e.target.value.trim())}
+                    onChange={(e) => setName(e.target.value.trim().toLowerCase())}
                   />
                   <Form.Text className="text-muted">
                     You can access this at{' '}
