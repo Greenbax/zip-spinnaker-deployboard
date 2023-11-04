@@ -165,13 +165,21 @@ interface SnapshotDeployModalProps {
 const SnapshotDeployModal = ({ pipeline, setPipeline, image, onClose, onSubmit }: SnapshotDeployModalProps) => {
   const [hours, setHours] = useState(1);
   const [name, setName] = useState('');
+  const [environment, setEnvironment] = useState('qa');
+
+  const environmentLabels = new Map([
+    ['qa', 'QA/staging'],
+    ['readonly', 'Production (readonly)'],
+    ['readwrite', 'Production (read/write)'],
+  ]);
+
   const command: IPipelineCommand = {
     pipelineName: pipeline,
     parameters: { image, version: image.replace(DOCKER_PREFIX, ''), name },
     trigger: {
       enabled: true,
       type: 'manual',
-      parameters: { image, version: image.replace(DOCKER_PREFIX, ''), name, hours }, // Ignore error, using for pipelines
+      parameters: { image, version: image.replace(DOCKER_PREFIX, ''), name, hours, environment }, // Ignore error, using for pipelines
     },
   };
   return (
@@ -200,53 +208,75 @@ const SnapshotDeployModal = ({ pipeline, setPipeline, image, onClose, onSubmit }
           </Dropdown.Menu>
         </Dropdown>
         {pipeline === NEXT_PREVIEW && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              paddingTop: '16px',
-            }}
-          >
-            <div style={{ display: 'flex', width: '70%' }}>
-              <Form>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    style={{ maxWidth: '200px' }}
-                    type="name"
-                    placeholder="Enter name"
-                    onChange={(e) => setName(e.target.value.trim())}
-                  />
-                  <Form.Text className="text-muted">
-                    You can access this at{' '}
-                    <a target="_blank" href={'https://' + name + '.next-preview.ziphq.com'}>
-                      {name}.next-preview.ziphq.com
-                    </a>
-                  </Form.Text>
-                </Form.Group>
-              </Form>
+          <>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                paddingTop: '16px',
+              }}
+            >
+              <div style={{ display: 'flex', width: '70%' }}>
+                <Form>
+                  <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      style={{ maxWidth: '200px' }}
+                      type="name"
+                      placeholder="Enter name"
+                      onChange={(e) => setName(e.target.value.trim())}
+                    />
+                    <Form.Text className="text-muted">
+                      You can access this at{' '}
+                      <a target="_blank" href={'https://' + name + '.next-preview.ziphq.com'}>
+                        {name}.next-preview.ziphq.com
+                      </a>
+                    </Form.Text>
+                  </Form.Group>
+                </Form>
+              </div>
+              <div style={{ display: 'flex', width: '30%', flexDirection: 'column' }}>
+                <label>Number of hours</label>
+                <Dropdown>
+                  <Dropdown.Toggle>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      {`Hours: ${hours}`}
+                      <ArrowDropDown />
+                    </span>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {Array.from([1, 2, 3, 4]).map((hrs) => (
+                      <Dropdown.Item>
+                        <li>
+                          <a onClick={() => setHours(hrs)}>{hrs}</a>
+                        </li>
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
             </div>
-            <div style={{ display: 'flex', width: '30%', flexDirection: 'column' }}>
-              <label>Select number of hours </label>
+            <div style={{ marginTop: '16px' }}>
+              <label>Environment</label>
               <Dropdown>
                 <Dropdown.Toggle>
                   <span style={{ display: 'flex', alignItems: 'center' }}>
-                    {`Hours: ${hours}`}
+                    {environmentLabels.get(environment)}
                     <ArrowDropDown />
                   </span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {Array.from([1, 2, 3, 4]).map((hrs) => (
-                    <Dropdown.Item>
+                  {Array.from(environmentLabels).map(([key, value]) => (
+                    <Dropdown.Item onClick={() => setEnvironment(key)}>
                       <li>
-                        <a onClick={() => setHours(hrs)}>{hrs}</a>
+                        <a>{value}</a>
                       </li>
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
             </div>
-          </div>
+          </>
         )}
       </ModalBody>
       <Modal.Footer>
